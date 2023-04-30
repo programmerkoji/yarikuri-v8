@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Item;
+use App\Models\Month;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        Item::factory(20)->create();
+        Month::factory(20)->create();
+
+        $this->call([
+            UserSeeder::class,
+            ItemMonthSeeder::class
+        ]);
     }
 }
