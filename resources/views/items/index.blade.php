@@ -3,8 +3,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-4 text-gray-900">
-                    <div class="py-4">
+                    <div class="py-4 flex justify-between items-center">
                         <a href="{{route('items.create')}}" class="inline-flex text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded">項目追加</a>
+                        <dl class="flex gap-2 justify-end">
+                            <dt>合計金額</dt>
+                            <dd>{{ number_format($calculateTotalAmounts) }}円</dd>
+                        </dl>
                     </div>
                     <div class="relative overflow-x-auto">
                         <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 min-w-max">
