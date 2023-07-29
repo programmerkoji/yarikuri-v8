@@ -36,7 +36,8 @@ class ItemController extends Controller
     public function index()
     {
         $items = $this->itemService->sortByItem();
-        return view('items.index', compact('items'));
+        $calculateTotalAmounts = $this->itemService->calculateTotalAmount();
+        return view('items.index', compact('items', 'calculateTotalAmounts'));
     }
 
     /**

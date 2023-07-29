@@ -27,6 +27,16 @@ class ItemService
         return $this->itemRepository->getAllItems();
     }
 
+    public function calculateTotalAmount()
+    {
+        $prices = [];
+        foreach ($this->index() as $value) {
+            $prices[] = $value->price;
+        }
+        $calculateTotalAmounts = array_sum($prices);
+        return $calculateTotalAmounts;
+    }
+
     public function sortByItem()
     {
         return $this->index()->sortByDesc('created_at');
