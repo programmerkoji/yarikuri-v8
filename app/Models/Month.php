@@ -20,4 +20,9 @@ class Month extends Model
             ->belongsToMany(Item::class, 'item_months')
             ->withPivot('is_checked');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
