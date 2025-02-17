@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Services\ItemMonthService;
 use App\Http\Services\ItemService;
 use App\Http\Services\MonthService;
+use App\Repositories\ItemRepositoryInterface;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -29,8 +30,9 @@ class DashboardController extends Controller
      * @param MonthService
      * @param ItemMonthService
      */
-    public function __construct(ItemService $itemService, MonthService $monthService, ItemMonthService $itemMonthService)
+    public function __construct(ItemRepositoryInterface $itemRepository, ItemService $itemService, MonthService $monthService, ItemMonthService $itemMonthService)
     {
+        $this->itemRepository = $itemRepository;
         $this->itemService = $itemService;
         $this->monthService = $monthService;
         $this->itemMonthService = $itemMonthService;

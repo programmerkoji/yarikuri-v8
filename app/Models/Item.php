@@ -11,7 +11,8 @@ class Item extends Model
 
     protected $fillable = [
         'name',
-        'price'
+        'price',
+        'user_id',
     ];
 
     public function months()

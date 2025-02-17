@@ -34,4 +34,8 @@ class ItemPostRequest extends FormRequest
             'price.integer' => '金額は数値で入力してください',
         ];
     }
+    public function validated()
+    {
+        return array_merge(parent::validated(), ['user_id' => auth()->id()]);
+    }
 }

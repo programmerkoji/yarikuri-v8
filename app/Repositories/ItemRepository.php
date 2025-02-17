@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Repositories;
+namespace App\Repositories;
 
 use App\Models\Item;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Suppoort\Facades\DB;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Log;
 
-class ItemRepository
+class ItemRepository implements ItemRepositoryInterface
 {
     /**
      * @var Item
@@ -23,11 +24,11 @@ class ItemRepository
     }
 
     /**
-     * @param $item
+     * @params $useId
      */
-    public function getAllItems()
+    public function getOwnedByUser(int $userId): Collection
     {
-        return $this->item->all();
+        return $this->item->where('user_id', $userId)->get();
     }
 
     /**
@@ -47,22 +48,22 @@ class ItemRepository
     }
 
     /**
-     * @param int $id
+     * @param int $itemId
      */
-    public function findById(int $id)
+    public function findById(int $itemId)
     {
-        return $this->item->findOrFail($id);
+        return $this->item->findOrFail($itemId);
     }
 
     /**
      * @param array $data
-     * @param int $id
+     * @param int $itemId
      */
-    public function update(array $data, int $id)
+    public function update(array $data, int $itemId)
     {
         try {
             FacadesDB::beginTransaction();
-            $this->findById($id)->fill($data)->save();
+            $this->findById($itemId)->fill($data)->save();
             FacadesDB::commit();
         } catch (\Throwable $th) {
             Log::error($th);
@@ -71,13 +72,13 @@ class ItemRepository
     }
 
     /**
-     * @param int $id
+     * @param int $itemId
      */
-    public function destroy(int $id)
+    public function destroy(int $itemId)
     {
         try {
             FacadesDB::beginTransaction();
-            $this->findById($id)->delete();
+            $this->findById($itemId)->delete();
             FacadesDB::commit();
         } catch (\Throwable $th) {
             Log::error($th);
