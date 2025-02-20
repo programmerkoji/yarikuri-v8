@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Http\Repositories;
+namespace App\Repositories;
 
 use App\Models\Month;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Suppoort\Facades\DB;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Log;
 
-class MonthRepository
+class MonthRepository implements MonthRepositoryInterface
 {
     const PAGINATE = 12;
 
@@ -25,21 +26,11 @@ class MonthRepository
     }
 
     /**
-     *
+     * @params int $userId
      */
-    public function getAllMonthsPaginate()
+    public function getOwnedByUser(int $userId): Collection
     {
-        return $this->month->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
-            ->paginate(self::PAGINATE);
-    }
-
-    /**
-     *
-     */
-    public function getAllMonths()
-    {
-        return $this->month->all();
+        return $this->month->where('user_id', $userId)->get();
     }
 
     /**
@@ -59,21 +50,21 @@ class MonthRepository
     }
 
     /**
-     * @param int $id
+     * @param int $monthId
      */
-    public function findById(int $id)
+    public function findById(int $monthId)
     {
-        return $this->month->findOrFail($id);
+        return $this->month->findOrFail($monthId);
     }
 
     /**
-     * @param int $id
+     * @param int $monthId
      */
-    public function update(array $data, int $id)
+    public function update(array $data, int $monthId)
     {
         try {
             FacadesDB::beginTransaction();
-            $this->findById($id)->fill($data)->save();
+            $this->findById($monthId)->fill($data)->save();
             FacadesDB::commit();
         } catch (\Throwable $th) {
             Log::error($th);
@@ -82,13 +73,13 @@ class MonthRepository
     }
 
     /**
-     * @param int $id
+     * @param int $monthId
      */
-    public function destroy(int $id)
+    public function destroy(int $monthId)
     {
         try {
             FacadesDB::beginTransaction();
-            $this->findById($id)->delete();
+            $this->findById($monthId)->delete();
             FacadesDB::commit();
         } catch (\Throwable $th) {
             Log::error($th);

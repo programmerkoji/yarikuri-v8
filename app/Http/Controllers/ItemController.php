@@ -40,7 +40,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = $this->itemRepository->getOwnedByUser($this->getUserId())->sortByDesc('created_date');
+        $items = $this->itemRepository->getOwnedByUser($this->getUserId())->sortByDesc('created_at');
         $calculateTotalAmounts = $this->itemService->calculateTotalAmount($this->getUserId());
         return view('items.index', compact('items', 'calculateTotalAmounts'));
     }

@@ -2,31 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Repositories\MonthRepository;
 use App\Http\Requests\MonthPostRequest;
 use App\Http\Services\MonthService;
+use App\Repositories\MonthRepositoryInterface;
 use Illuminate\Http\Request;
 
 class MonthController extends Controller
 {
     /**
-     * @var MonthRepository
+     * @var MonthRepositoryInterface
      */
     protected $monthRepository;
 
-     /**
-     * @var MonthService
-     */
-    protected $monthService;
-
     /**
-     * @param MonthRepository
+     * @param MonthRepositoryInterface
      * @param MonthService
      */
-    public function __construct(MonthRepository $monthRepository, MonthService $monthService)
+    public function __construct(MonthRepositoryInterface $monthRepository)
     {
         $this->monthRepository = $monthRepository;
-        $this->monthService = $monthService;
+    }
+
+    /**
+     * ログインユーザーの取得
+     * @return int
+     */
+    public function getUserId()
+    {
+        return auth()->id();
     }
 
     /**
@@ -34,7 +37,7 @@ class MonthController extends Controller
      */
     public function index()
     {
-        $months = $this->monthService->sortByMultipleColumns();
+        $months = $this->monthRepository->getOwnedByUser($this->getUserId())->sortByDesc('created_at');
         return view('months.index', compact('months'));
     }
 
@@ -51,7 +54,8 @@ class MonthController extends Controller
      */
     public function store(MonthPostRequest $request)
     {
-        $this->monthService->store($request->validated());
+        $request->merge(['user_id' => $this->getUserId()]);
+        $this->monthRepository->store($request->validated());
 
         return redirect()
             ->route('months.index')
@@ -59,21 +63,21 @@ class MonthController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param int $monthId
      */
-    public function edit(int $id)
+    public function edit(int $monthId)
     {
-        $month = $this->monthRepository->findById($id);
+        $month = $this->monthRepository->findById($monthId);
         return view('months.edit', compact('month'));
     }
 
     /**
      * @param MonthPostRequest $request
-     * @param int $id
+     * @param int $monthId
      */
-    public function update(MonthPostRequest $request, int $id)
+    public function update(MonthPostRequest $request, int $monthId)
     {
-        $this->monthService->update($request->validated(), $id);
+        $this->monthRepository->update($request->validated(), $monthId);
 
         return redirect()
             ->route('months.index')
@@ -81,12 +85,12 @@ class MonthController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param int $monthId
      * @return void
      */
-    public function destroy(int $id)
+    public function destroy(int $monthId)
     {
-        $this->monthService->destroy($id);
+        $this->monthRepository->destroy($monthId);
 
         return redirect()
             ->route('months.index')
