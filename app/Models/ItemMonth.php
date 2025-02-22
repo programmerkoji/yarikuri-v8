@@ -14,4 +14,9 @@ class ItemMonth extends Model
         'month_id',
         'is_checked',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

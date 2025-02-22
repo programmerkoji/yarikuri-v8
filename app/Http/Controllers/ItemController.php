@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Repositories\ItemRepository;
+use App\Repositories\ItemRepository;
+use App\Repositories\ItemRepositoryInterface;
 use App\Http\Requests\ItemPostRequest;
 use App\Http\Services\ItemService;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
 {
-        /**
-     * @var ItemRepository
+    /**
+     * @var ItemRepositoryInterface
      */
-    protected $item;
+    protected $itemRepository;
 
     /**
      * @var ItemService
@@ -21,22 +22,26 @@ class ItemController extends Controller
 
 
     /**
-     * @param ItemRepository $itemRepository
+     * @param ItemRepositoryInterface $itemRepository
      * @param ItemService $itemService
      */
-    public function __construct(ItemRepository $itemRepository, ItemService $itemService)
+    public function __construct(ItemRepositoryInterface $itemRepository, ItemService $itemService)
     {
         $this->itemRepository = $itemRepository;
         $this->itemService = $itemService;
     }
 
+    public function getUserId()
+    {
+        return auth()->id();
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $items = $this->itemService->sortByItem();
-        $calculateTotalAmounts = $this->itemService->calculateTotalAmount();
+        $items = $this->itemRepository->getOwnedByUser($this->getUserId())->orderBy('created_at', 'desc')->paginate(config('const.pagination'));
+        $calculateTotalAmounts = $this->itemService->calculateTotalAmount($this->getUserId());
         return view('items.index', compact('items', 'calculateTotalAmounts'));
     }
 
@@ -54,7 +59,8 @@ class ItemController extends Controller
      */
     public function store(ItemPostRequest $request)
     {
-        $this->itemService->store($request->validated());
+        $request->merge(['user_id' => $this->getUserId()]);
+        $this->itemRepository->store($request->validated());
 
         return redirect()
             ->route('items.index')
@@ -64,19 +70,18 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(int $id)
+    public function edit(int $itemId)
     {
-        $item = $this->itemRepository->findById($id);
-
+        $item = $this->itemRepository->findById($itemId);
         return view('items.edit', compact('item'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ItemPostRequest $request, int $id)
+    public function update(ItemPostRequest $request, int $itemId)
     {
-        $this->itemService->update($request->validated(), $id);
+        $this->itemRepository->update($request->validated(), $itemId);
 
         return redirect()
             ->route('items.index')
@@ -86,9 +91,9 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(int $itemId)
     {
-        $this->itemService->destroy($id);
+        $this->itemRepository->destroy($itemId);
 
         return redirect()
             ->route('items.index')

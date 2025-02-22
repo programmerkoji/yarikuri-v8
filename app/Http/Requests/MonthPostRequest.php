@@ -38,4 +38,9 @@ class MonthPostRequest extends FormRequest
             'month.max' => '月は12以下で入力してください',
         ];
     }
+
+    public function validated()
+    {
+        return array_merge(parent::validated(), ['user_id' => auth()->id()]);
+    }
 }

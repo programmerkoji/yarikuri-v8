@@ -2,71 +2,35 @@
 
 namespace App\Http\Services;
 
-use App\Http\Repositories\ItemRepository;
+use App\Repositories\ItemRepository;
+use App\Repositories\ItemRepositoryInterface;
 
 class ItemService
 {
     /**
-     * @var ItemRepository
+     * @var ItemRepositoryInterface
      */
     protected $itemRepository;
 
     /**
-     * @param ItemRepository $itemRepository
+     * @param ItemRepositoryInterface $itemRepository
      */
-    public function __construct(ItemRepository $itemRepository)
+    public function __construct(ItemRepositoryInterface $itemRepository)
     {
         $this->itemRepository = $itemRepository;
     }
 
     /**
-     * @return object
+     * @param int $userId
+     * @return void
      */
-    public function index()
-    {
-        return $this->itemRepository->getAllItems();
-    }
-
-    public function calculateTotalAmount()
+    public function calculateTotalAmount(int $userId)
     {
         $prices = [];
-        foreach ($this->index() as $value) {
+        foreach ($this->itemRepository->getOwnedByUser($userId) as $value) {
             $prices[] = $value->price;
         }
         $calculateTotalAmounts = array_sum($prices);
         return $calculateTotalAmounts;
-    }
-
-    public function sortByItem()
-    {
-        return $this->index()->sortByDesc('created_at');
-    }
-
-    /**
-     * @param array $data
-     */
-    public function store(array $data)
-    {
-        $item = $this->itemRepository->store($data);
-        return $item;
-    }
-
-    /**
-     * @param array $data
-     * @param int $id
-     */
-    public function update(array $data, int $id)
-    {
-        $item = $this->itemRepository->update($data, $id);
-        return $item;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function destroy(int $id)
-    {
-        $item = $this->itemRepository->destroy($id);
-        return $item;
     }
 }

@@ -1,45 +1,34 @@
 <?php
 
-namespace App\Http\Repositories;
+namespace App\Repositories;
 
-use App\Models\Month;
+use App\Models\Item;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Suppoort\Facades\DB;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Log;
 
-class MonthRepository
+class ItemRepository implements ItemRepositoryInterface
 {
-    const PAGINATE = 12;
+    /**
+     * @var Item
+     */
+    protected $item;
 
     /**
-     * @var Month
+     * @param Item
      */
-    protected $month;
-
-    /**
-     * @param Month
-     */
-    public function __construct(Month $month)
+    public function __construct(Item $item)
     {
-        $this->month = $month;
+        $this->item = $item;
     }
 
     /**
-     *
+     * @params $useId
      */
-    public function getAllMonthsPaginate()
+    public function getOwnedByUser(int $userId): Builder
     {
-        return $this->month->orderBy('year', 'desc')
-            ->orderBy('month', 'desc')
-            ->paginate(self::PAGINATE);
-    }
-
-    /**
-     *
-     */
-    public function getAllMonths()
-    {
-        return $this->month->all();
+        return $this->item->where('user_id', $userId);
     }
 
     /**
@@ -49,8 +38,8 @@ class MonthRepository
     {
         try {
             FacadesDB::beginTransaction();
-            $month = new Month;
-            $month->fill($data)->save();
+            $item = new Item;
+            $item->fill($data)->save();
             FacadesDB::commit();
         } catch (\Throwable $th) {
             Log::error($th);
@@ -59,21 +48,22 @@ class MonthRepository
     }
 
     /**
-     * @param int $id
+     * @param int $itemId
      */
-    public function findById(int $id)
+    public function findById(int $itemId)
     {
-        return $this->month->findOrFail($id);
+        return $this->item->findOrFail($itemId);
     }
 
     /**
-     * @param int $id
+     * @param array $data
+     * @param int $itemId
      */
-    public function update(array $data, int $id)
+    public function update(array $data, int $itemId)
     {
         try {
             FacadesDB::beginTransaction();
-            $this->findById($id)->fill($data)->save();
+            $this->findById($itemId)->fill($data)->save();
             FacadesDB::commit();
         } catch (\Throwable $th) {
             Log::error($th);
@@ -82,13 +72,13 @@ class MonthRepository
     }
 
     /**
-     * @param int $id
+     * @param int $itemId
      */
-    public function destroy(int $id)
+    public function destroy(int $itemId)
     {
         try {
             FacadesDB::beginTransaction();
-            $this->findById($id)->delete();
+            $this->findById($itemId)->delete();
             FacadesDB::commit();
         } catch (\Throwable $th) {
             Log::error($th);

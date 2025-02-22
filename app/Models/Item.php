@@ -11,7 +11,8 @@ class Item extends Model
 
     protected $fillable = [
         'name',
-        'price'
+        'price',
+        'user_id',
     ];
 
     public function months()
@@ -19,5 +20,10 @@ class Item extends Model
         return $this
             ->belongsToMany(Month::class, 'item_months')
             ->withPivot('is_checked');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

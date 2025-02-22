@@ -3,21 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Http\Services\ItemMonthService;
-use App\Http\Services\ItemService;
-use App\Http\Services\MonthService;
+use App\Repositories\ItemRepositoryInterface;
+use App\Repositories\MonthRepositoryInterface;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-        /**
-     * @var ItemService
+    /**
+     * @var ItemRepositoryInterface
      */
-    protected $itemService;
+    protected $itemRepository;
 
     /**
-     * @var MonthService
+     * @var MonthRepositoryInterface
      */
-    protected $monthService;
+    protected $monthRepository;
 
     /**
      * @var ItemMonthService
@@ -25,15 +25,20 @@ class DashboardController extends Controller
     protected $itemMonthService;
 
     /**
-     * @param ItemService
-     * @param MonthService
+     * @param ItemRepositoryInterface
+     * @param MonthRepositoryInterface
      * @param ItemMonthService
      */
-    public function __construct(ItemService $itemService, MonthService $monthService, ItemMonthService $itemMonthService)
+    public function __construct(ItemRepositoryInterface $itemRepository, MonthRepositoryInterface $monthRepository, ItemMonthService $itemMonthService)
     {
-        $this->itemService = $itemService;
-        $this->monthService = $monthService;
+        $this->itemRepository = $itemRepository;
+        $this->monthRepository = $monthRepository;
         $this->itemMonthService = $itemMonthService;
+    }
+
+    public function getUserId()
+    {
+        return auth()->id();
     }
 
     /**
@@ -41,8 +46,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $items = $this->itemService->index();
-        $months = $this->monthService->sortByMultipleColumns();
+        $items = $this->itemRepository->getOwnedByUser($this->getUserId())->get();
+        $months = $this->monthRepository->getOwnedByUser($this->getUserId())->paginate(config('const.pagination'));
 
         return view('dashboard', compact('items', 'months'));
     }
