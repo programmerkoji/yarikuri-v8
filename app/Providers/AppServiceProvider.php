@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\ItemMonthRepository;
+use App\Repositories\ItemMonthRepositoryInterface;
 use App\Repositories\ItemRepository;
 use App\Repositories\ItemRepositoryInterface;
 use App\Repositories\MonthRepository;
@@ -24,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             MonthRepositoryInterface::class,
             MonthRepository::class
+        );
+        $this->app->bind(
+            ItemMonthRepositoryInterface::class,
+            ItemMonthRepository::class
         );
     }
 

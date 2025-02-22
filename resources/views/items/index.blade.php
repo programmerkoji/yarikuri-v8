@@ -53,7 +53,9 @@
                             </tbody>
                         </table>
                     </div>
-
+                    <div class="mt-4">
+                        {{$items->links('vendor.pagination.simple-tailwind')}}
+                    </div>
                 </div>
             </div>
         </div>

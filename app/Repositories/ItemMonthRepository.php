@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Repositories;
+namespace App\Repositories;
 
 use App\Models\ItemMonth;
 use Illuminate\Suppoort\Facades\DB;
 
-class ItemMonthRepository
+class ItemMonthRepository implements ItemMonthRepositoryInterface
 {
     /**
      * @var ItemMonth

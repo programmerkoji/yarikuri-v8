@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Item;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Suppoort\Facades\DB;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Log;
@@ -26,9 +26,9 @@ class ItemRepository implements ItemRepositoryInterface
     /**
      * @params $useId
      */
-    public function getOwnedByUser(int $userId): Collection
+    public function getOwnedByUser(int $userId): Builder
     {
-        return $this->item->where('user_id', $userId)->get();
+        return $this->item->where('user_id', $userId);
     }
 
     /**

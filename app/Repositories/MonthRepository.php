@@ -3,8 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Month;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Suppoort\Facades\DB;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Support\Facades\Log;
 
@@ -28,9 +27,9 @@ class MonthRepository implements MonthRepositoryInterface
     /**
      * @params int $userId
      */
-    public function getOwnedByUser(int $userId): Collection
+    public function getOwnedByUser(int $userId): EloquentBuilder
     {
-        return $this->month->where('user_id', $userId)->get();
+        return $this->month->where('user_id', $userId);
     }
 
     /**

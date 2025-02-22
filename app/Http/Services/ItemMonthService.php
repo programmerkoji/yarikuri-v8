@@ -2,20 +2,20 @@
 
 namespace App\Http\Services;
 
-use App\Http\Repositories\ItemMonthRepository;
+use App\Repositories\ItemMonthRepositoryInterface;
 use Illuminate\Http\Request;
 
 class ItemMonthService
 {
     /**
-     * @var ItemMonthRepository
+     * @var ItemMonthRepositoryInterface
      */
     protected $itemMonthRepository;
 
     /**
-     * @param ItemMonthRepository $itemMonthRepository
+     * @param ItemMonthRepositoryInterface $itemMonthRepository
      */
-    public function __construct(ItemMonthRepository $itemMonthRepository)
+    public function __construct(ItemMonthRepositoryInterface $itemMonthRepository)
     {
         $this->itemMonthRepository = $itemMonthRepository;
     }

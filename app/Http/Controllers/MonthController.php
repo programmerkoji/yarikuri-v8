@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MonthPostRequest;
-use App\Http\Services\MonthService;
 use App\Repositories\MonthRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -16,7 +15,6 @@ class MonthController extends Controller
 
     /**
      * @param MonthRepositoryInterface
-     * @param MonthService
      */
     public function __construct(MonthRepositoryInterface $monthRepository)
     {
@@ -37,7 +35,7 @@ class MonthController extends Controller
      */
     public function index()
     {
-        $months = $this->monthRepository->getOwnedByUser($this->getUserId())->sortByDesc('created_at');
+        $months = $this->monthRepository->getOwnedByUser($this->getUserId())->orderBy('created_at', 'desc')->paginate(config('const.pagination'));
         return view('months.index', compact('months'));
     }
 

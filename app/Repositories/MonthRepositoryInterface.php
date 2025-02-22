@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 
 interface MonthRepositoryInterface
 {
-    public function getOwnedByUser(int $userId): Collection;
+    public function getOwnedByUser(int $userId): EloquentBuilder;
     public function findById(int $monthId);
     public function store(array $data);
     public function update(array $data, int $monthId);
