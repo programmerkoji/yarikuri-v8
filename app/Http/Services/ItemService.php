@@ -26,8 +26,9 @@ class ItemService
      */
     public function calculateTotalAmount(int $userId)
     {
+        $items = $this->itemRepository->getOwnedByUser($userId)->get();
         $prices = [];
-        foreach ($this->itemRepository->getOwnedByUser($userId) as $value) {
+        foreach ($items as $value) {
             $prices[] = $value->price;
         }
         $calculateTotalAmounts = array_sum($prices);
