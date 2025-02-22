@@ -47,7 +47,8 @@ class DashboardController extends Controller
     public function index()
     {
         $items = $this->itemRepository->getOwnedByUser($this->getUserId())->get();
-        $months = $this->monthRepository->getOwnedByUser($this->getUserId())->paginate(config('const.pagination'));
+        $months = $this->monthRepository->getOwnedByUser($this->getUserId())
+            ->orderBy('year', 'desc')->orderBy('month', 'desc')->paginate(config('const.pagination'));
 
         return view('dashboard', compact('items', 'months'));
     }
