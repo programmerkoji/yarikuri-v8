@@ -66,6 +66,7 @@ class MonthController extends Controller
     public function edit(int $monthId)
     {
         $month = $this->monthRepository->findById($monthId);
+        $this->authorize('update', $month);
         return view('months.edit', compact('month'));
     }
 
@@ -75,6 +76,8 @@ class MonthController extends Controller
      */
     public function update(MonthPostRequest $request, int $monthId)
     {
+        $month = $this->monthRepository->findById($monthId);
+        $this->authorize('update', $month);
         $this->monthRepository->update($request->validated(), $monthId);
 
         return redirect()
@@ -88,6 +91,8 @@ class MonthController extends Controller
      */
     public function destroy(int $monthId)
     {
+        $month = $this->monthRepository->findById($monthId);
+        $this->authorize('delete', $month);
         $this->monthRepository->destroy($monthId);
 
         return redirect()

@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Item;
+use App\Models\Month;
+use App\Policies\ItemPolicy;
+use App\Policies\MonthPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -13,7 +17,8 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        'App\Models\Item' => 'App\Policies\ItemPolicy',
+        Item::class => ItemPolicy::class,
+        Month::class => MonthPolicy::class,
     ];
 
     /**

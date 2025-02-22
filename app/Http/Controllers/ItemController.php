@@ -73,6 +73,7 @@ class ItemController extends Controller
     public function edit(int $itemId)
     {
         $item = $this->itemRepository->findById($itemId);
+        $this->authorize('edit', $item);
         return view('items.edit', compact('item'));
     }
 
@@ -81,6 +82,8 @@ class ItemController extends Controller
      */
     public function update(ItemPostRequest $request, int $itemId)
     {
+        $item = $this->itemRepository->findById($itemId);
+        $this->authorize('update', $item);
         $this->itemRepository->update($request->validated(), $itemId);
 
         return redirect()
@@ -93,6 +96,8 @@ class ItemController extends Controller
      */
     public function destroy(int $itemId)
     {
+        $item = $this->itemRepository->findById($itemId);
+        $this->authorize('delete', $item);
         $this->itemRepository->destroy($itemId);
 
         return redirect()
