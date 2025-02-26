@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\MonthPostRequest;
 use App\Repositories\MonthRepositoryInterface;
-use Illuminate\Http\Request;
 
 class MonthController extends Controller
 {
@@ -36,15 +35,21 @@ class MonthController extends Controller
     public function index()
     {
         $months = $this->monthRepository->getOwnedByUser($this->getUserId())->orderBy('created_at', 'desc')->paginate(config('const.pagination'));
-        return view('months.index', compact('months'));
+        return response()->json([
+            'months' => $months,
+        ], 201);
     }
 
     /**
-     *
+     * Show the form for creating a new resource.
      */
-    public function create()
+    public function show(int $monthId)
     {
-        return view('months.create');
+        $month = $this->monthRepository->findById($monthId);
+        $this->authorize('view', $month);
+        return response()->json([
+            'month' => $month,
+        ], 201);
     }
 
     /**
@@ -52,22 +57,23 @@ class MonthController extends Controller
      */
     public function store(MonthPostRequest $request)
     {
-        $request->merge(['user_id' => $this->getUserId()]);
-        $this->monthRepository->store($request->validated());
-
-        return redirect()
-            ->route('months.index')
-            ->with('message', '年月を登録しました');
-    }
-
-    /**
-     * @param int $monthId
-     */
-    public function edit(int $monthId)
-    {
-        $month = $this->monthRepository->findById($monthId);
-        $this->authorize('update', $month);
-        return view('months.edit', compact('month'));
+        try {
+            $request->merge(['user_id' => $this->getUserId()]);
+            $this->monthRepository->store($request->validated());
+            return response()->json([
+                'message' => '年月を登録しました'
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'バリデーションに失敗しました',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => '問題が発生しました',
+                'errors' => $e->errors(),
+            ], 500);
+        }
     }
 
     /**
@@ -76,13 +82,24 @@ class MonthController extends Controller
      */
     public function update(MonthPostRequest $request, int $monthId)
     {
-        $month = $this->monthRepository->findById($monthId);
-        $this->authorize('update', $month);
-        $this->monthRepository->update($request->validated(), $monthId);
-
-        return redirect()
-            ->route('months.index')
-            ->with('message', '年月を更新しました');
+        try {
+            $month = $this->monthRepository->findById($monthId);
+            $this->authorize('update', $month);
+            $this->monthRepository->update($request->validated(), $monthId);
+            return response()->json([
+                'message' => '年月を更新しました'
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'message' => 'バリデーションに失敗しました',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => '問題が発生しました',
+                'errors' => $e->errors(),
+            ], 500);
+        }
     }
 
     /**
@@ -91,12 +108,18 @@ class MonthController extends Controller
      */
     public function destroy(int $monthId)
     {
-        $month = $this->monthRepository->findById($monthId);
-        $this->authorize('delete', $month);
-        $this->monthRepository->destroy($monthId);
-
-        return redirect()
-            ->route('months.index')
-            ->with('alert', '項目を削除しました');
+        try {
+            $month = $this->monthRepository->findById($monthId);
+            $this->authorize('delete', $month);
+            $this->monthRepository->destroy($monthId);
+            return response()->json([
+                'message' => '年月を削除しました'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => '問題が発生しました',
+                'errors' => $e->errors(),
+            ], 500);
+        }
     }
 }

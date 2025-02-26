@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\ItemController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\MonthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('items', ItemController::class);
+    Route::apiResource('months', MonthController::class);
 });
 
 // Route::middleware('auth:sanctum')->group(function () {

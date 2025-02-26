@@ -6,6 +6,12 @@ window._ = require('lodash');
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
 
+axios.get('/sanctum/csrf-cookie').then(() => {
+    axios.post('/api/login', { email, password }).then(response => {
+        console.log(response.data);
+    });
+});
+
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';

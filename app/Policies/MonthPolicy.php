@@ -30,7 +30,7 @@ class MonthPolicy
      */
     public function view(User $user, Month $month)
     {
-        //
+        return $user->id === $month->user_id;
     }
 
     /**
