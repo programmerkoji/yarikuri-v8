@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
     Route::apiResource('items', ItemController::class);
     Route::apiResource('months', MonthController::class);
 });
