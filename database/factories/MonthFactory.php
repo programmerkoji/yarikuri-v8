@@ -15,9 +15,24 @@ class MonthFactory extends Factory
     public function definition()
     {
         return [
-            'year' => $this->faker->numberBetween(2021, 2023),
-            'month' => $this->faker->numberBetween(1, 12),
-            'user_id' => User::exists() ? User::pluck('id')->random() : User::factory(),
+            'year' => 2025,
+            'month' => 3,
+            'user_id' => User::factory(),
         ];
+    }
+
+    public function withUniqueData()
+    {
+        $users = User::pluck('id')->toArray();
+        $months = range(1, 12);
+        $years = range(2020, 2030);
+
+        return $this->sequence(
+            fn ($seq) => [
+                'year' => $years[$seq->index % count($years)],
+                'month' => $months[$seq->index % count($months)],
+                'user_id' => $users[$seq->index % count($users)],
+            ]
+        );
     }
 }

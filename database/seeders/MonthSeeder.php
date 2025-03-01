@@ -14,6 +14,6 @@ class MonthSeeder extends Seeder
      */
     public function run()
     {
-        Month::factory(20)->create();
+        Month::factory()->count(30)->withUniqueData()->create();
     }
 }

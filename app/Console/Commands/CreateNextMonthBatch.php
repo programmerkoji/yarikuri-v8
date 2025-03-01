@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Month;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -44,10 +45,16 @@ class CreateNextMonthBatch extends Command
         $nextMonth = Carbon::now()->addMonth();
         try {
             DB::beginTransaction();
-            Month::create([
-                'year' => $nextMonth->year,
-                'month' => $nextMonth->month
-            ]);
+            $data = User::select('id')->get()->map(function ($user) use ($nextMonth) {
+                return [
+                    'year' => $nextMonth->year,
+                    'month' => $nextMonth->month,
+                    'user_id' => $user->id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            })->toArray();
+            DB::table('months')->upsert($data, ['year', 'month', 'user_id'], ['updated_at']);
             $this->info($nextMonth->year.'年'.$nextMonth->month.'月を登録しました。');
             DB::commit();
         } catch (\Throwable $th) {
