@@ -17,17 +17,21 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-        $request->session()->regenerate();
+        if (!Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
 
         $user = Auth::user();
-        $token = $user->createToken('auth-token')->plainTextToken;
 
         return response()->json([
-            'user' => $user,
-            'token' => $token
-        ]);
+            'message' => 'ログインに成功しました',
+            'user' => $user
+        ], 200);
     }
 
     /**
@@ -38,12 +42,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
+        auth()->guard('web')->logout();
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return response()->json([
-            'message' => 'ログアウト'
-        ]);
+            'message' => 'ログアウトに成功しました'
+        ], 200);
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\MonthController;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +17,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::middleware('auth:sanctum')->get('/user', function (HttpRequest $request) {
+    return $request->user();
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
