@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Repositories\ItemRepositoryInterface;
 use App\Http\Requests\ItemPostRequest;
 use App\Http\Services\ItemService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class ItemController extends Controller
@@ -44,7 +45,7 @@ class ItemController extends Controller
         return response()->json([
             'items' => $items,
             'calculateTotalAmounts' => $calculateTotalAmounts,
-        ], 201);
+        ], 200);
     }
 
     /**
@@ -56,7 +57,7 @@ class ItemController extends Controller
         $this->authorize('view', $item);
         return response()->json([
             'item' => $item,
-        ], 201);
+        ], 200);
     }
 
     /**
@@ -77,6 +78,7 @@ class ItemController extends Controller
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
+            Log::error($e);
             return response()->json([
                 'message' => '問題が発生しました',
                 'errors' => $e->errors(),

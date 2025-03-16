@@ -37,7 +37,7 @@ class MonthController extends Controller
         $months = $this->monthRepository->getOwnedByUser($this->getUserId())->orderBy('created_at', 'desc')->paginate(config('const.pagination'));
         return response()->json([
             'months' => $months,
-        ], 201);
+        ], 200);
     }
 
     /**
@@ -49,7 +49,7 @@ class MonthController extends Controller
         $this->authorize('view', $month);
         return response()->json([
             'month' => $month,
-        ], 201);
+        ], 200);
     }
 
     /**
