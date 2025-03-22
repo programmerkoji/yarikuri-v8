@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\PaginationHelper;
 use App\Repositories\ItemRepositoryInterface;
 use App\Http\Requests\ItemPostRequest;
 use App\Http\Services\ItemService;
@@ -42,8 +43,9 @@ class ItemController extends Controller
     {
         $items = $this->itemRepository->getOwnedByUser($this->getUserId())->orderBy('created_at', 'desc')->paginate(config('const.pagination'));
         $calculateTotalAmounts = $this->itemService->calculateTotalAmount($this->getUserId());
+        $customLinks = PaginationHelper::generatePaginationLinks($items);
         return response()->json([
-            'items' => $items,
+            'items' => array_merge($items->toArray(), ['custom_links' => $customLinks]),
             'calculateTotalAmounts' => $calculateTotalAmounts,
         ], 200);
     }
