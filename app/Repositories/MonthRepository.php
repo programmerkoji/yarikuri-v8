@@ -42,9 +42,10 @@ class MonthRepository implements MonthRepositoryInterface
             $month = new Month;
             $month->fill($data)->save();
             FacadesDB::commit();
-        } catch (\Throwable $th) {
-            Log::error($th);
+        } catch (\Exception $e) {
+            Log::error($e);
             FacadesDB::rollback();
+            throw $e;
         }
     }
 
@@ -65,9 +66,10 @@ class MonthRepository implements MonthRepositoryInterface
             FacadesDB::beginTransaction();
             $this->findById($monthId)->fill($data)->save();
             FacadesDB::commit();
-        } catch (\Throwable $th) {
-            Log::error($th);
+        } catch (\Exception $e) {
             FacadesDB::rollback();
+            Log::error($e);
+            throw $e;
         }
     }
 
@@ -80,9 +82,10 @@ class MonthRepository implements MonthRepositoryInterface
             FacadesDB::beginTransaction();
             $this->findById($monthId)->delete();
             FacadesDB::commit();
-        } catch (\Throwable $th) {
-            Log::error($th);
+        } catch (\Exception $e) {
+            Log::error($e);
             FacadesDB::rollback();
+            throw $e;
         }
     }
 }

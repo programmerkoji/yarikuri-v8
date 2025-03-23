@@ -71,6 +71,11 @@ class MonthController extends Controller
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
+            if ($e->errorInfo[1] == 1062) {
+                return response()->json([
+                    'unique_error' => 'すでに登録されている年月です'
+                ], 422);
+            }
             return response()->json([
                 'message' => '問題が発生しました',
                 'errors' => $e->errors(),
@@ -97,6 +102,11 @@ class MonthController extends Controller
                 'errors' => $e->errors()
             ], 422);
         } catch (\Exception $e) {
+            if ($e->errorInfo[1] == 1062) {
+                return response()->json([
+                    'unique_error' => 'すでに登録されている年月です'
+                ], 422);
+            }
             return response()->json([
                 'message' => '問題が発生しました',
                 'errors' => $e->errors(),
