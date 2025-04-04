@@ -37,10 +37,25 @@ class ItemMonthRepository implements ItemMonthRepositoryInterface
     }
 
     /**
+     * blade用のチェック登録更新
      *
+     * @param [type] $id
+     * @param [type] $data
+     * @return void
      */
     public function createOrUpdateItemMonth($id, $data)
     {
         $this->itemMonth->updateOrCreate(['id' => $id], $data);
+    }
+
+    public function createOrUpdateItemMonthApi($data)
+    {
+        $this->itemMonth->updateOrCreate(
+            [
+                'item_id' => $data['item_id'],
+                'month_id' => $data['month_id']
+            ],
+            $data
+        );
     }
 }

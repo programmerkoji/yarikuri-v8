@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\ItemController;
 use App\Http\Controllers\Api\MonthController;
+use App\Http\Controllers\Api\TopController;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -23,8 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (HttpRequest $request) 
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
-    Route::apiResource('items', ItemController::class);
-    Route::apiResource('months', MonthController::class);
+    Route::apiResource('item', ItemController::class);
+    Route::apiResource('month', MonthController::class);
+    Route::get('top-month', [TopController::class, 'topMonths']);
+    Route::get('top-item/{month}', [TopController::class, 'topItems']);
+    Route::post('top-item' , [TopController::class, 'store']);
 });
 
 // Route::middleware('auth:sanctum')->group(function () {

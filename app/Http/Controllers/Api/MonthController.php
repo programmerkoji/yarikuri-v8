@@ -35,7 +35,8 @@ class MonthController extends Controller
      */
     public function index()
     {
-        $months = $this->monthRepository->getOwnedByUser($this->getUserId())->orderBy('created_at', 'desc')->paginate(config('const.pagination'));
+        $months = $this->monthRepository->getOwnedByUser($this->getUserId())
+            ->orderBy('year', 'desc')->orderBy('month', 'desc')->paginate(config('const.pagination'));
         $customLinks = PaginationHelper::generatePaginationLinks($months);
         return response()->json([
             'months' => array_merge($months->toArray(), ['custom_links' => $customLinks]),

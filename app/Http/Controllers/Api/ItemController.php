@@ -41,7 +41,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = $this->itemRepository->getOwnedByUser($this->getUserId())->orderBy('created_at', 'desc')->paginate(config('const.pagination'));
+        $items = $this->itemRepository->getOwnedByUser($this->getUserId())->orderBy('updated_at', 'desc')->paginate(config('const.pagination'));
         $calculateTotalAmounts = $this->itemService->calculateTotalAmount($this->getUserId());
         $customLinks = PaginationHelper::generatePaginationLinks($items);
         return response()->json([

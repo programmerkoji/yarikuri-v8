@@ -22,7 +22,7 @@ class ItemMonthFactory extends Factory
             'item_id' => $this->faker->randomElement($itemId),
             'month_id' => $this->faker->randomElement($monthId),
             'user_id' => User::exists() ? User::pluck('id')->random() : User::factory(),
-            'is_checked' => $this->faker->numberBetween(1, 2),
+            'is_checked' => $this->faker->numberBetween(0, 1),
         ];
     }
 }
