@@ -23,7 +23,7 @@ class AuthenticatedSessionController extends Controller
         ]);
 
         if (!Auth::attempt($credentials)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => 'メールアドレスかパスワードに誤りがあります'], 401);
         }
 
         $user = Auth::user();
